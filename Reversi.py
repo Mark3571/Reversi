@@ -246,6 +246,35 @@ class ReversiGame:
         #als aan geen van de voorwaarden voldoet is het een illegale move, dus False
         return False
 
+
+    #Voer een zet uit: plaats steen op (r,c) en draai alle ingesloten tegenstanderstenen om
+    def make_move(self, r, c, player):
+        #Plaats de nieuwe steen in het bord
+        self.board[r][c] = player
+        opp = self.opponent(player)
+
+        #Voor elke richting de velden van de tegenstander pakken
+        for dr,dc in self.DIRS:
+            rr, cc = r+dr, c+dc
+            path = []
+            #zolang stenen van tegenstander tegenkomen moet het doorgaan
+            while 0 <= rr < self.n and 0 <= cc < self.n and self.board[rr][cc] == opp:
+                path.append((rr,cc))
+                rr += dr; cc += dc
+            #Als path niet leeg is en we eindigen op een eigen steen flip alle stenen op path
+            if path and 0 <= rr < self.n and 0 <= cc < self.n and self.board[rr][cc] == player:
+                for pr,pc in path:
+                    self.board[pr][pc] = player
+    
+    def switch_turns(self):
+        other = self.opponent(self.current_player)
+        if self.legal_moves(other):
+            #beurtwisseling
+            self.current_player = other
+        elif not self.legal_moves(self.current_player):
+            #geen van beiden kan zetten dus het spel is over
+            
+
 scherm = tk.Tk()
 ReversiGame(scherm)
 scherm.mainloop()
