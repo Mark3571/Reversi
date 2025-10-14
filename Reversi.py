@@ -37,8 +37,7 @@ class ReversiGame:
         tk.Button(menu, text= "Nieuw spel", command=self.new_game).pack(side=tk.LEFT, padx = 4)
 
         #Help knop die switch tussen help aan/uit
-        #self.help_btn = tk.Button(menu, text="Help: uit", command=self.switch_help)
-        self.help_btn = tk.Button(menu, text="Help: uit", ) #WEGHALEN
+        self.help_btn = tk.Button(menu, text="Help: uit", command=self.switch_help)
         self.help_btn.pack(side=tk.LEFT, padx = 4)
 
         #Frame om huidige staat beurt/status te tonen
@@ -159,7 +158,7 @@ class ReversiGame:
         self.canvas.create_image(x-straal, y-straal, anchor=tk.NW, image=img)
 
     #Switch voor de help functie
-    def Switch_help(self):
+    def switch_help(self):
         #Wissel bool
         self.help_shown = not self.help_shown
         #Verander knoptekst
