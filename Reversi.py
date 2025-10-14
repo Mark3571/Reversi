@@ -279,11 +279,11 @@ class ReversiGame:
             s = "Blauw aan zet" if self.current_player==self.BLUE else "Rood aan zet"
         self.turn_label.config(text=f"Status: {s}")
 
-    #Behandel einde van het spel: pop-up met resultaat
+    #Einde van spel
     def game_over(self):
         b = sum(row.count(self.BLUE) for row in self.board)
         r = sum(row.count(self.RED) for row in self.board)
-        result = "Remise"
+        result = "Gelijk spel"
         if b > r:
             result = "Blauw wint!"
         elif r > b:
