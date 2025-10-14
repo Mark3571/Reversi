@@ -18,7 +18,7 @@ class ReversiGame:
     #Initialiseer GUI scherm
     def __init__(self,scherm):
         self.scherm = scherm
-        scherm.title("Reversi game") #Geef venster Titel
+        scherm.title("Reversi game") #Geef venster Titel    
 
         #Variabele voor de groote van het bord
         #Gekoppeldt aan het label waarin de bordgroote staat
@@ -188,7 +188,63 @@ class ReversiGame:
         self.turn_label.config(text=f"Status: {status}") 
 
 
+    #Markeert de cel zodat je weet wat een geldige zet is
+    def highlight_cell(self, r, c, color):
+        pad = 20
+        x0 = pad + c*self.cell_size
+        y0 = pad + r*self.cell_size
+        x1 = x0 + self.cell_size
+        y1 = y0 + self.cell_size
+        self.canvas.create_rectangle(x0, y0, x1, y1, outline=color, width=3)
 
+    def on_click(self, event):
+        pad = 20
+        # Zet canvas coordinaten om naar kolom en rij
+        x = event.x - pad
+        y = event.y - pad
+        c = int(x // self.cell_size)
+        r = int(y // self.cell_size)
+
+    # Als klik buiten bord, negeren
+        if not (0 <= r < self.n and 0 <= c < self.n):
+            return
+
+        # Als het een legale zet is, voer deze uit
+        if (r,c) in self.legal_moves(self.current_player):
+            self.make_move(r, c, self.current_player)  #plaats stenen of verandr ze van kleur
+            self.switch_turns()                         #wisselt van speler of pas
+            self.draw_board()                           #tekent het nieuwe bord
+            self.update_status()                        #update de score
+
+    def tegenstander(self, player):
+        return self.RED if player == self.BLUE else self.BLUE
+
+    # Bepaal alle legale zetten voor speler: teruggeven als lijst van (r,c)
+    def legal_moves(self, player):
+        moves = []
+        # loop over alle velden en controleer leeg + legaliteit
+        for r in range(self.n):
+            for c in range(self.n):
+                if self.board[r][c] == self.EMPTY and self.is_legal_move(r, c, player):
+                    moves.append((r,c))
+        return moves
+
+    #Controleer of zetten op row, colum (r, c) legaal is voor player
+    def is_legal_move(self, r, c, player):
+        opp = self.opponent(player)
+        # voor elke richting kijken of je minstens 1 opeenvolgende tegenstander-steen vindt
+        for dr,dc in self.DIRS:
+            rr, cc = r+dr, c+dc
+            found = False
+            # loop door tegenstanderstenen in deze richting
+            while 0 <= rr < self.n and 0 <= cc < self.n and self.board[rr][cc] == opp:
+                rr += dr; cc += dc
+                found = True
+            #als we minstens 1 tegenstander zagen en daarna een eigen steen
+            if found and 0 <= rr < self.n and 0 <= cc < self.n and self.board[rr][cc] == player:
+                return True
+        #als aan geen van de voorwaarden voldoet is het een illegale move, dus False
+        return False
 
 scherm = tk.Tk()
 ReversiGame(scherm)
