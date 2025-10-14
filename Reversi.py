@@ -12,6 +12,9 @@ class ReversiGame:
     BLUE = 1 #Blauwe steen
     RED = 2 #Rode steen
 
+    #Manieren om over bord te gaan
+    DIRS = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
+
     #Initialiseer GUI scherm
     def __init__(self,scherm):
         self.scherm = scherm
@@ -27,19 +30,20 @@ class ReversiGame:
 
         #Label en dropdown voor schermgroote
         #Bij verandering start er nieuw spel
-        tk.Label(menu, text="schermgroote:").pack(side=tk.LEFT)
-        tk.OptionMenu(menu, self.board_size, 4,6,8,10, command=self.new_game).pack(side=tk.LEFT)
+        tk.Label(menu, text="Schermgroote:").pack(side=tk.LEFT)
+        tk.OptionMenu(menu, self.board_size, 4,6,8,10, command=self.new_game).pack(side=tk.LEFT, padx = 4)
 
         #Knop om nieuw spel te starten
-        tk.Button(menu, text= "Nieuw spel", command=self.new_game).pack(side=tk.LEFT)
+        tk.Button(menu, text= "Nieuw spel", command=self.new_game).pack(side=tk.LEFT, padx = 4)
 
         #Help knop die switch tussen help aan/uit
         #self.help_btn = tk.Button(menu, text="Help: uit", command=self.switch_help)
-        #self.help_btn.pack(side=tk.LEFT)
+        self.help_btn = tk.Button(menu, text="Help: uit", ) #WEGHALEN
+        self.help_btn.pack(side=tk.LEFT, padx = 4)
 
         #Frame om huidige staat beurt/status te tonen
         status = tk.Frame(scherm)
-        status.pack(fill=tk.X)
+        status.pack(fill=tk.X, padx = 6)
 
         #Label dat de huidige aantallen toont
         self.count_label = tk.Label(status, text="Blauw: 0  Rood: 0", font=("Arial", 12))
@@ -51,7 +55,7 @@ class ReversiGame:
 
         #Canvas waarin getekent gaat worden
         self.canvas = tk.Canvas(scherm, width=600, height=600, bg="white")
-        self.canvas.pack()
+        self.canvas.pack(padx = 4, pady = 4)
 
         #Bind de linkermuisknop aan de on_click-methode
         #self.canvas.bind("<Button-1>", self.on_click)
@@ -85,7 +89,7 @@ class ReversiGame:
 
         #Zet help uit en update de knoptekst
         self.help_shown = False
-        #self.help_btn.config(text="Help: uit")
+        self.help_btn.config(text="Help: uit")
 
         #Teken het bord 
         self.draw_board()
@@ -153,6 +157,16 @@ class ReversiGame:
         img = self.images[key]
         #Teken
         self.canvas.create_image(x-straal, y-straal, anchor=tk.NW, image=img)
+
+    #Switch voor de help functie
+    def Switch_help(self):
+        #Wissel bool
+        self.help_shown = not self.help_shown
+        #Verander knoptekst
+        self.help_btn.config(text=f"Help: {'aan' if self.help_shown else 'uit'}")
+        #Herteken bord
+        self.draw_board()
+
 
 
 scherm = tk.Tk()
