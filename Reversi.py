@@ -166,6 +166,28 @@ class ReversiGame:
         #Herteken bord
         self.draw_board()
 
+    #Update status van het spel
+    def update_status(self):
+        #Tel stenen voor beide spelers
+        b = sum(row.count(self.BLUE) for  row in self.board)
+        r = sum(row.count(self.RED) for row in self.board)
+        #Update het tekstlabel
+        self.count_label.config(text=f"Blauw: {b}   Rood: {r}")
+
+        #Als er geen legale zet meer is, bepaal winnaar
+        if not self.legal_moves(self.BLUE) and not self.legal_moves(self.RED):
+            if b > r:
+                status =  "Blauw is winnaar"
+            elif r > b:
+                status = "Rood is winnaar" 
+            else:
+                status = "Remise"
+        else:
+            #Laat zien wie er aan zet is
+            s = "Blauw aan zet" if self.current_player==self.BLUE else "Rood aan zet"
+        self.turn_label.config(text=f"Status: {status}") 
+
+
 
 
 scherm = tk.Tk()
