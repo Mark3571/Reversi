@@ -34,8 +34,8 @@ class ReversiGame:
         tk.Button(menu, text= "Nieuw spel", command=self.new_game).pack(side=tk.LEFT)
 
         #Help knop die switch tussen help aan/uit
-        self.help_btn = tk.Button(menu, text="Help: uit", command=self.switch_help)
-        self.help_btn.pack(side=tk.LEFT)
+        #self.help_btn = tk.Button(menu, text="Help: uit", command=self.switch_help)
+        #self.help_btn.pack(side=tk.LEFT)
 
         #Frame om huidige staat beurt/status te tonen
         status = tk.Frame(scherm)
@@ -54,7 +54,7 @@ class ReversiGame:
         self.canvas.pack()
 
         #Bind de linkermuisknop aan de on_click-methode
-        self.canvas.bind("<Button-1>", self.on_click)
+        #self.canvas.bind("<Button-1>", self.on_click)
 
         #Laat zien of help aan of uit staat
         self.help_shown = False
@@ -68,7 +68,7 @@ class ReversiGame:
     #Initialiseer een nieuw spel
     def new_game(self):
         #Lees de gekozen bordgschermte en sla op in n
-        self.n = int(self.board_size_var.get())
+        self.n = int(self.board_size.get())
 
         #Maak een n x n bord en vul alle velden met EMPTY
         self.board = [[self.EMPTY for _ in range(self.n)] for __ in range(self.n)]
@@ -85,13 +85,13 @@ class ReversiGame:
 
         #Zet help uit en update de knoptekst
         self.help_shown = False
-        self.help_btn.config(text="Help: uit")
+        #self.help_btn.config(text="Help: uit")
 
         #Teken het bord 
         self.draw_board()
 
         #Update de statuslabels
-        self.update_status()        
+        #self.update_status()        
 
 
     #Teken het bord
