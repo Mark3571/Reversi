@@ -2,6 +2,7 @@
 #Gemaakt door Mark Crooijmans en Bruno Schuttelaars
 
 import tkinter as tk
+from tkinter import messagebox
 from PIL import Image, ImageDraw, ImageTk
 
 
@@ -28,9 +29,9 @@ class ReversiGame:
         menu = tk.Frame(scherm)
         menu.pack()
 
-        #Label en dropdown voor schermgroote
+        #Label en dropdown voor bordgroote
         #Bij verandering start er nieuw spel
-        tk.Label(menu, text="Schermgroote:").pack(side=tk.LEFT)
+        tk.Label(menu, text="Bordgroote:").pack(side=tk.LEFT)
         tk.OptionMenu(menu, self.board_size, 4,6,8,10, command=self.new_game).pack(side=tk.LEFT, padx = 4)
 
         #Knop om nieuw spel te starten
@@ -57,7 +58,7 @@ class ReversiGame:
         self.canvas.pack(padx = 4, pady = 4)
 
         #Bind de linkermuisknop aan de on_click-methode
-        #self.canvas.bind("<Button-1>", self.on_click)
+        self.canvas.bind("<Button-1>", self.on_click)
 
         #Laat zien of help aan of uit staat
         self.help_shown = False
@@ -94,7 +95,7 @@ class ReversiGame:
         self.draw_board()
 
         #Update de statuslabels
-        #self.update_status()        
+        self.update_status()        
 
 
     #Teken het bord
@@ -126,6 +127,10 @@ class ReversiGame:
                 if val != self.EMPTY:
                     color = "blue" if val == self.BLUE else "red"
                     self.draw_stone(r, c, color)
+
+        if self.help_shown:
+            for (r, c) in self.legal_moves(self.current_player):
+                self.highlight_cell(r, c, "green")
 
     #Teken steen op rij r, kolom c met de gegeven color
     def draw_stone(self, r, c, color):
@@ -166,28 +171,6 @@ class ReversiGame:
         #Herteken bord
         self.draw_board()
 
-    #Update status van het spel
-    def update_status(self):
-        #Tel stenen voor beide spelers
-        b = sum(row.count(self.BLUE) for  row in self.board)
-        r = sum(row.count(self.RED) for row in self.board)
-        #Update het tekstlabel
-        self.count_label.config(text=f"Blauw: {b}   Rood: {r}")
-
-        #Als er geen legale zet meer is, bepaal winnaar
-        if not self.legal_moves(self.BLUE) and not self.legal_moves(self.RED):
-            if b > r:
-                status =  "Blauw is winnaar"
-            elif r > b:
-                status = "Rood is winnaar" 
-            else:
-                status = "Remise"
-        else:
-            #Laat zien wie er aan zet is
-            s = "Blauw aan zet" if self.current_player==self.BLUE else "Rood aan zet"
-        self.turn_label.config(text=f"Status: {status}") 
-
-
     #Markeert de cel zodat je weet wat een geldige zet is
     def highlight_cell(self, r, c, color):
         pad = 20
@@ -216,7 +199,7 @@ class ReversiGame:
             self.draw_board()                           #tekent het nieuwe bord
             self.update_status()                        #update de score
 
-    def tegenstander(self, player):
+    def opponent(self, player):
         return self.RED if player == self.BLUE else self.BLUE
 
     # Bepaal alle legale zetten voor speler: teruggeven als lijst van (r,c)
@@ -273,7 +256,40 @@ class ReversiGame:
             self.current_player = other
         elif not self.legal_moves(self.current_player):
             #geen van beiden kan zetten dus het spel is over
+            self.game_over()
             
+    # Werk score en statuslabels bij
+    def update_status(self):
+        # Tel stenen van beide spelers
+        b = sum(row.count(self.BLUE) for row in self.board)
+        r = sum(row.count(self.RED) for row in self.board)
+        # Update het tekstlabel met counts
+        self.count_label.config(text=f"Blauw: {b}   Rood: {r}")
+
+        # Als niemand een legale zet heeft -> bepaal winnaar / remise
+        if not self.legal_moves(self.BLUE) and not self.legal_moves(self.RED):
+            if b > r:
+                s = "Blauw heeft gewonnen"
+            elif r > b:
+                s = "Rood heeft gewonnen"
+            else:
+                s = "Gelijk spel"
+        else:
+            #anders tekst tonen wie er aan zet is
+            s = "Blauw aan zet" if self.current_player==self.BLUE else "Rood aan zet"
+        self.turn_label.config(text=f"Status: {s}")
+
+    #Behandel einde van het spel: pop-up met resultaat
+    def game_over(self):
+        b = sum(row.count(self.BLUE) for row in self.board)
+        r = sum(row.count(self.RED) for row in self.board)
+        result = "Remise"
+        if b > r:
+            result = "Blauw wint!"
+        elif r > b:
+            result = "Rood wint!"
+        #Toon een informatie-venster met eindresultaat en scores
+        messagebox.showinfo("Einde spel", f"Blauw: {b}\nRood: {r}\n\n{result}")
 
 scherm = tk.Tk()
 ReversiGame(scherm)
