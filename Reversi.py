@@ -159,8 +159,10 @@ class ReversiGame:
 
         #Haal de afbeelding uit memory en teken
         img = self.images[key]
+
         #Teken
         self.canvas.create_image(x-straal, y-straal, anchor=tk.NW, image=img)
+
 
     #Switch voor de help functie
     def switch_help(self):
@@ -171,6 +173,7 @@ class ReversiGame:
         #Herteken bord
         self.draw_board()
 
+
     #Markeert de cel zodat je weet wat een geldige zet is
     def highlight_cell(self, r, c, color):
         pad = 20
@@ -180,6 +183,7 @@ class ReversiGame:
         y1 = y0 + self.cell_size
         self.canvas.create_rectangle(x0, y0, x1, y1, outline=color, width=3)
 
+
     def on_click(self, event):
         pad = 20
         # Zet canvas coordinaten om naar kolom en rij
@@ -188,7 +192,7 @@ class ReversiGame:
         c = int(x // self.cell_size)
         r = int(y // self.cell_size)
 
-    # Als klik buiten bord, negeren
+        #Als klik buiten bord, negeren
         if not (0 <= r < self.n and 0 <= c < self.n):
             return
 
@@ -199,8 +203,10 @@ class ReversiGame:
             self.draw_board()                           #tekent het nieuwe bord
             self.update_status()                        #update de score
 
+
     def opponent(self, player):
         return self.RED if player == self.BLUE else self.BLUE
+
 
     # Bepaal alle legale zetten voor speler: teruggeven als lijst van (r,c)
     def legal_moves(self, player):
@@ -211,6 +217,7 @@ class ReversiGame:
                 if self.board[r][c] == self.EMPTY and self.is_legal_move(r, c, player):
                     moves.append((r,c))
         return moves
+
 
     #Controleer of zetten op row, colum (r, c) legaal is voor player
     def is_legal_move(self, r, c, player):
@@ -249,6 +256,7 @@ class ReversiGame:
                 for pr,pc in path:
                     self.board[pr][pc] = player
     
+
     def switch_turns(self):
         other = self.opponent(self.current_player)
         if self.legal_moves(other):
@@ -258,11 +266,13 @@ class ReversiGame:
             #geen van beiden kan zetten dus het spel is over
             self.game_over()
             
+
     # Werk score en statuslabels bij
     def update_status(self):
         # Tel stenen van beide spelers
         b = sum(row.count(self.BLUE) for row in self.board)
         r = sum(row.count(self.RED) for row in self.board)
+
         # Update het tekstlabel met counts
         self.count_label.config(text=f"Blauw: {b}   Rood: {r}")
 
@@ -290,6 +300,7 @@ class ReversiGame:
             result = "Rood wint!"
         #Toon een informatie-venster met eindresultaat en scores
         messagebox.showinfo("Einde spel", f"Blauw: {b}\nRood: {r}\n\n{result}")
+
 
 scherm = tk.Tk()
 ReversiGame(scherm)
