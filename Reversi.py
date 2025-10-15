@@ -70,7 +70,7 @@ class ReversiGame:
         self.new_game()
 
     #Initialiseer een nieuw spel
-    def new_game(self):
+    def new_game(self, *args):
         #Lees de gekozen bordgschermte en sla op in n
         self.n = int(self.board_size.get())
 
